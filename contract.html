@@ -1125,14 +1125,13 @@ background-color: #040d32;
        function formatArgumentValue(item) {
           console.log('.....item', item)
          if( item.classList.contains("tx-value") ) {
-            return  { "value": ethers.utils.parseEther(i.value) }
+            return  { "value": ethers.utils.parseEther(item.value) }
           } else if( COMPLEX_TYPES.has(item.getAttribute('data')) ) {
             return JSON.parse(item.value);
           } else {
             return item.value;
           }
        }
-
        function getArgumentValues() {
           var selector = "#input-section input";
           var inputs = document.querySelectorAll(selector);

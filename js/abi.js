@@ -1,5 +1,5 @@
 var defaultAbis = {
-  ropsten: [
+  homestead: [
     {
       address: "0xF8D18b3C5De9892681998076Bebcba32e62e0835",
       name: "DNSRegistrar",
@@ -778,7 +778,7 @@ var defaultAbis = {
       ],
     },
   ],
-  unknown: [
+  tnmi: [
     {
       address: "0xdaBF643796185ef74242Fd160A61d7A9a1E044fc",
       name: "CryptoKitties",
