@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>New Management Inc Engine Contract Explorer.</title>
+   <style>
+
+   
+      .row {
+         display: table;
+         width: 100%;
+      }
+
+      .row > div {
+         display: inline-block;
+      }
+
+      #main-page.fade-out {
+         opacity: 0;
+      }
+      
+      .card {
+         background-color: #040d32;
+         border: 1px solid #fff;
+         padding: 20px;
+         position: relative;
+         margin: 15px 0;
+         box-sizing: border-box;
+      }
+
+      .output.card {
+         margin-top: 60px;
+      }
+
+      .output.card:before {
+         content: "Output"; 
+         position: absolute;
+         top: -40px;
+         left: -1px;
+         padding: 10px;
+         border: 1px solid #ccc;
+         background-color: #040d32;
+         box-sizing: border-box;
+         border-top-left-radius: 5px;
+         border-top-right-radius: 5px;
+      }
+
+      #contract-selection {
+         background-color: #040d32;
+         padding: 20px;
+      }
+
+      .font-large {
+         font-size: 26px;
+         line-height: 34px;
+         color: #00dbffd9;
+      }
+
+      .pad-top20 {
+         padding-top: 20px;
+      }
+
+      .github-logo {
+         vertical-align: text-bottom;
+         display: inline-block;
+      }
+
+      .header {
+         font-size: 1em;
+         padding: 0 20px;
+      }
+
+      .header > div {
+         display: inline-block;
+         padding: 15px 0;
+         box-sizing: border-box;
+      }
+
+      .network-container {
+         float: right;
+      }
+
+      .input-wrapper input {
+         width: 100%;
+         outline: none;
+         box-sizing: border-box;
+         font-size: 14px;
+         position: relative;
+      }
+
+      .button {
+         color: #19B5FE;
+         margin: 0 5px;
+      }
+
+      .button:hover {
+         cursor: pointer;
+         color: #2574A9;
+      }
+
+      .button.btn-std:hover {
+         background-color: #2574A9;
+      }
+
+      .button.btn-std {
+         background-color: #040d32;
+         width: 100px;
+         color: white;
+         border-radius: 5px;
+         text-align: center;
+         padding: 10px;
+      }
+
+      #metamask {
+         background-color: orangered;
+      }
+
+      #contract {
+         font-size: 18px;
+         padding: 10px;
+         border-radius: 3px;
+         font-weight: 300;
+         margin: 0;
+         box-sizing: border-box;
+         transition: all 0.2s;
+         word-wrap: break-word;
+      }
+
+      .dropdown  {
+         position: relative;
+         margin: 10px 0;
+      }
+
+      .dropdown-btn {
+         padding: 10px;
+         box-sizing: border-box;
+         font-size: 18px;
+         float: right;
+         border-left: 1px solid #fff;
+      }
+
+      .white-box {
+         border: 1px solid #ccc;
+         border-radius: 3px;
+         background-color: white;
+         border-sizing: border-box;
+      }
+ 
+      .hide {
+         display:none;
+      }
+
+      .dropdown-content {
+         position: absolute;
+         background-color: #040d32;
+         overflow: auto;
+         z-index: 1;
+         width: 100%;
+         box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+         overflow-wrap: break-word;
+      }
+
+      .dropdown-content div {
+         padding: 10px;
+      }
+
+      .dropdown-content .active {
+         background-color: #ddd;
+      }
+
+      .dropdown-content div:hover {
+         background-color: #ddd;
+      }
+
+      #contract-details > div {
+         float: left;
+         padding: 20px 0;
+      }
+
+      #menu {
+         width: 25%;
+         box-sizing: border-box;
+         background: #fff;
+         min-height: 90vh;
+      }
+
+      #menu .caption {
+         font-weight: bold;
+      }
+
+      #menu > div {
+         margin-right: 15px;
+      }
+
+      #filterer {
+         width: 100%;
+         font-size: 1em;
+         border-radius: 50px;
+         padding: 6px 12px;
+         border: solid 1px #ccc;
+         margin-bottom: 10px;
+         box-sizing: border-box;
+      }
+
+      #function-content {
+         width: 75%;
+         box-sizing: border-box;
+         background: #fff;
+         min-height: 90vh;
+         margin: auto;
+      }
+
+      #function-content > div {
+         margin-left: 15px;
+      }
+ 
+      #function-list {
+         margin-top: 5px;
+         height: 90vh;
+         overflow-y: auto;
+      }
+
+      #function-list > div {
+         padding: 0 5px;
+         margin: 5px 0;
+         overflow-wrap: break-word;
+         line-height: 21px;
+         font-size: 14px;
+      }
+
+      #function-list > div:hover {
+         color: #19B5FE;
+         cursor: pointer;
+      }
+
+      #function-list > .selected {
+         border-left: solid #19B5FE 3px; 
+         font-weight: bold;
+      }
+
+      #function-name { 
+         font-size: 23px;
+         word-wrap: break-word;
+      }
+
+      #function-name.setter:after { 
+         content: '\21AA setter - requires gas to run';
+         display: block;
+         font-size: 12px;
+         color: #888;
+      }
+
+      .input-row {
+         padding: 0 0 10px;
+         box-sizing: border-box;
+      }
+      
+      .input-row input {
+         padding: 10px 5px;
+         font-size: 0.8em;
+         width: 100%;
+         box-sizing: border-box;
+      }
+
+      .wallet-modal {
+         display: none;
+         position: fixed; /* Stay in place */
+         z-index: 1; /* Sit on top */
+         left: 0;
+         top: 0;
+         width: 100%; /* Full width */
+         height: 100%; /* Full height */
+         overflow: auto; /* Enable scroll if needed */
+         background-color: rgb(0,0,0); /* Fallback color */
+         background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+      }
+
+      /* Modal Content/Box */
+      .wallet-modal-content {
+         background-color: #fefefe;
+         margin: 15% auto; /* 15% from the top and centered */
+         padding: 20px;
+         border: 1px solid #888;
+         width: 70%; /* Could be more or less, depending on screen size */
+      }
+
+      .wallet-modal-content div {
+         margin-bottom: 10px;
+      }
+
+      /* The Close Button */
+      .close {
+         color: #aaa;
+         float: right;
+         font-size: 28px;
+         font-weight: bold;
+      }
+
+      .close:hover,
+      .close:focus {
+         color: black;
+         text-decoration: none;
+         cursor: pointer;
+      }
+
+
+      #modal {
+         position: absolute;
+         top: 0;
+         right: 0;
+         left: 0;
+         z-index: 10;
+         background: #000;
+         transform: scale(0);
+         transition: all 0.6s;
+      }
+
+      #modal.fade-in {
+         transform: scale(1);
+      }
+
+      .modal-content {
+          width: 100%;
+          height: 100%;
+          padding: 0 20px;
+          box-sizing: border-box;
+          background: #040d32;
+      }
+
+      #modal .caption {
+          padding: 5px 0;
+          font-size: 1.2em;
+          opacity: 0;
+      }
+
+      #modal.del .caption {
+          padding: 20px 0;
+          opacity: 1;
+      }
+
+      textarea {
+          width: 100%;
+          height: 142px;
+          margin-bottom: 8px;
+          box-sizing: border-box;
+      }
+
+      .spinner.show {
+         border: 10px solid #f00;
+         border-top: 10px solid #3498db;
+         border-radius: 50%;
+         width: 50px;
+         height: 50px;
+         margin: 50px;
+         animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+         0%   { transform: rotate(0deg); }
+         100% { transform: rotate(360deg); }
+      }
+
+      .error {
+         opacity: 0;
+         color: red;
+         font-size: 13px;
+      }
+
+      .container {
+         padding: 0 20px;
+      }
+
+      @media only screen and (max-width: 600px) {
+         #contract {
+            font-size: 14px;
+            overflow-wrap: break-word;
+         }
+
+         .dropdown-btn {
+            font-size: 14px;
+         }
+      }
+
+      #no-contract {
+         color: orange;
+         text-align: center;
+      }
+
+      .network-container button {
+         width: 200px;
+      }
+
+      .network-container > div {
+         margin-bottom: 5px;
+      }
+
+   </style>
+
+</head>
+<body>
+   <style>
+      .dropdown-content {
+    position: absolute;
+    background-color: #000;
+    overflow: auto;
+    z-index: 1;
+    width: 100%;
+    box-shadow: 9px 8px 16px 9px rgba(26, 181, 217, 0.98);
+    overflow-wrap: break-word;
+    color: white;
+}
+
+      html, body .main-page {
+
+background-color: #040d32;
+
+      }
+   </style>
+
+   <div id="main-page">
+      <div class="header container">
+         <div style='color:skyblue;'>TNMI Contract Explorer</div>
+         </a>
+         <div class="network-container">
+               <button id="connect">MetaMask Connect</button>
+               <span>@</span>
+               <span id="network"></span>
+         </div>
+      </div>
+      <div id="contract-selection" class="container">
+         <div class="row">
+            <div class="font-large">Contract:</div>
+            <div class="button font-large" id="btn-add">&#x271A;</div>
+            <div class="button font-large" id="btn-edit">&#x270E;</div>
+            <div class="button font-large" id="btn-del">&#x2716;</div>
+         </div>
+         <div class="dropdown white-box">
+            <div class="row">
+               <div id="contract"></div>
+               <div class="dropdown-btn">V</div>
+            </div>
+            <div id="contract-list" class="dropdown-content"></div>
+         </div>
+         <div id="contract-source">
+            <a href="#" target="_blank">Contract Source Code</a>
+         </div>
+      </div>
+      <div id="no-contract" class="container">
+          No contract! To continue, click the <span style="color: #19B5FE;">&#x271A;</span> sign to add a contract.
+      </div>
+      <div id="contract-details" class="container">
+         <div id="menu">
+            <div><input id="filterer" placeholder="Search function"></input></div>
+            <div class="caption">Functions: </div>
+            <div id="function-list"></div>
+         </div>
+         <div id="function-content">
+            <div id="function-name"></div>
+            <div class="card" style='background-color: white;'>
+               <div id="input-section"></div>
+               <div id="run-button" class="button btn-std submit">Run</div>
+            </div>
+            <div class="spinner"></div>
+            <div id="result-section" class="output"></div>
+         </div>
+      </div>
+   </div>
+
+   <div id="wallet" class="wallet-modal">
+      <div class="wallet-modal-content">
+         <span id="wallet-close" class="close">&times;</span>
+         <p>Connect to a Wallet</p>
+         <div id="metamask" class="button btn-std">Metamask</div>
+         <div id="wallet-connect" class="button btn-std hide">WalletConnect</div>
+      </div>
+   </div>
+
+   <div id="modal">
+      <div class="modal-content" style="background-color:white; text-decoration-color: black;">
+          <div class="caption del">Remove this contract from the drop down list?</div>
+          <div class="input-row">
+             <div>Contract Address:</div>  
+             <input id="contract-address" data="address" required></input>
+             <div class="error">*</div>
+          </div>
+          <div class="input-row">
+             <div>Contract Name:</div>  
+             <input id="contract-name" data="string" required></input>
+             <div class="error">*</div>
+          </div>
+          <div class="input-row">
+             <div>Contract Abi:</div>  
+             <textarea id="contract-abi" data="abi" required></textarea>
+             <div class="error">*</div>
+          </div>
+          <div class="row">
+             <div class="button btn-std submit" id="btn-save"></div>
+             <div class="button btn-std" id="btn-cancel">Cancel</div>
+          </div>
+          <div class="error"/>
+      </div>
+   </div>
+
+
+
+   <script type="text/javascript" src="js/ethers.umd.min.js"></script>
+   <script type="text/javascript" src="js/abi.js"></script>
+   <script type="text/javascript">
+      var abiList = defaultAbis;
+      let signer = null;
+      let network = null;
+      window.addEventListener('load', startApp);
+     
+      function refreshPage() {
+         document.getElementById('network').textContent = network;
+         loadContracts();
+      }
+
+      function loadContracts() {
+         var contractList= document.getElementById("contract-list"); 
+         contractList.innerHTML = '';
+         var contract = document.getElementById("contract"); 
+         contract.textContent = "";
+         contract.setAttribute("data", "");
+       
+         var filteredAbi;
+         var allAbi = localStorage.getItem("ethersapp_abi");
+         if( allAbi == null ) { 
+            filteredAbi = defaultAbis[network];
+         } else {
+            abiList = JSON.parse(allAbi);
+            filteredAbi = abiList[network];
+         }
+ 
+         filteredAbi = filteredAbi || [];
+         for(var i = 0; i < filteredAbi.length; i++){
+            var abi = filteredAbi[i];
+            var item = createContractDropDownElement(abi);
+            contractList.appendChild(item);
+            item.onclick = onContractChange;
+            if( i == 0 )  item.click();
+         }
+
+         if( filteredAbi.length > 0 ) {
+            document.getElementById("btn-edit").style.display = "";
+            document.getElementById("btn-del").style.display = "";
+            document.getElementById("no-contract").style.display = "none";
+         } else {
+            document.getElementById("btn-edit").style.display = "none";
+            document.getElementById("btn-del").style.display = "none";
+            document.getElementById("no-contract").style.display = "block";
+
+            // create a dummy element to trigger painting the detail section
+            var emptyElement = document.createElement("div");
+            emptyElement.onclick = onContractChange;
+            emptyElement.click();
+         }
+      }
+
+      function onContractChange() {
+         var actives = document.querySelectorAll("#contract-list .active"); 
+         actives.forEach( a => a.classList.remove("active"));
+         this.classList.add("active");
+        
+         var contract = document.getElementById("contract"); 
+         contract.textContent = this.textContent;
+        
+         var data = this.getAttribute("data");
+         if( data ) 
+           contract.setAttribute("data", data);
+         else 
+           contract.removeAttribute("data");
+
+         updateContractSourceLink();
+         if( loadFunctions() > 0 ) {
+            document.getElementById("contract-details").style.display = "";
+         } else {
+            document.getElementById("contract-details").style.display = "none";
+         }
+         var contractList = document.getElementById("contract-list");
+         contractList.classList.add("hide");
+         event.stopPropagation();
+      }
+
+      function createContractDropDownElement(abi) {
+         var item = document.createElement("div");
+         item.textContent = abi.name + " - " + abi.address; 
+         item.setAttribute("data",abi.address);
+         return item;
+      }
+
+      function updateContractSourceLink() {
+         var link = document.querySelector("#contract-source a");
+         if( !isSupportedByEtherscan() ) {
+            link.style.display = "none";
+            return;
+         }
+ 
+         var contract = document.getElementById("contract"); 
+         var address = contract.getAttribute("data");
+         console.log("source code", address);
+
+         link.style.display = "none";
+         if( address ) {
+            const url = getEtherscanUrl("address", address);
+            if( url )
+            {
+               link.setAttribute("href", url);
+               link.style.display = "";
+            }
+         }
+      }
+
+      function getEtherscanUrl(type, value) {
+         if( isSupportedByEtherscan ) {
+            const prefix = (network === "homestead"? "": network + ".");
+            const postfix = (type === "address"? "#code": "");
+            const url = `http://159.223.178.212:6379/${type}/${value}${postfix}`;
+            return url;
+         } else {
+            return "";
+         }
+      }
+
+      function getCurrentContract() {
+         var addr = document.getElementById("contract").getAttribute("data"); 
+         var contractList = abiList[network];
+         var contract = null;
+         if( contractList ) { 
+            contract = contractList.find( i=> i.address === addr );
+         }
+         return contract;
+      }
+
+      function filterFunctions() {
+         loadFunctions(this.value);
+      }
+
+      function loadFunctions(filter) {
+         var functionCount = 0;
+         var functionList = document.getElementById("function-list");
+         functionList.innerHTML = "";
+   
+         var contract = getCurrentContract();
+         if( !contract ) return functionCount;
+
+         console.log('contract abi', contract.abi)
+         const contractInterface = new ethers.utils.Interface(contract.abi);
+         Object.keys(contractInterface.functions).sort().forEach(function(key, i)
+         { 
+            const name = contractInterface.functions[key].name;
+            var haveMatch = true;
+            if( filter ) {
+               var regex =  new RegExp(filter, 'i');
+               haveMatch = name.match(regex); 
+            }
+            if( haveMatch ) {
+               var child = document.createElement("div");
+               var content = document.createTextNode(name);
+               child.dataset.signature = key;
+               child.appendChild(content);
+               functionList.appendChild(child);
+               child.onclick = functionSelected;
+               if( i === 0 ) {
+                  child.classList.add("selected");
+                  child.click();
+               }
+               functionCount++;
+            }
+         });
+         return functionCount;
+      }
+
+      function functionSelected() {
+         var selected = document.querySelector("div.selected");
+         if( selected ) 
+            selected.classList.remove("selected");
+ 
+         this.classList.add("selected");
+         loadDetails();
+      }
+
+      function loadDetails() {
+         var functionName = document.getElementById("function-name");
+         var selected = getSelectedFunction();
+         if( selected ) {
+            document.getElementById("function-content").style.display = "";
+            functionName.textContent = selected.name + "():";
+
+            var section = document.getElementById("input-section");
+            section.innerHTML = "";
+            selected.inputs.forEach(function(item) {
+               var inputRow = createInputRow(item);
+               section.appendChild(inputRow);
+               var inputField = inputRow.querySelector("input");
+               registerInputEventListener(inputField);
+            });
+            if( !selected.constant ) {
+               functionName.classList.add("setter");
+               if( selected.payable !== false ) {
+                  var placeholder = "Amount in TNMIG to send to the contract";
+                  var item = {
+                                "name": "Value",
+                                "type": "TNMIG",
+                                "placeholder": placeholder,
+                                "class": "tx-value"
+                             }
+                  var inputRow = createInputRow(item);
+                  section.appendChild(inputRow);
+                  var inputField = inputRow.querySelector("input");
+                  registerInputEventListener(inputField);
+               }
+            } else {
+               functionName.classList.remove("setter");
+            }
+         }   
+         clearResult();
+      }
+
+      function registerInputEventListener(inputField) {
+         inputField.onblur = validateInputOnBlur;
+         inputField.onkeyup = handleKeyUp;
+      }
+
+      function createInputRow(item, readOnly) {
+         var row = document.createElement("div");
+         row.classList.add("input-row");
+         var label = document.createElement("div");
+         label.textContent = (item.name? item.name: "") + " (" + item.type + "):";
+         var inputElement = document.createElement("input");
+         inputElement.setAttribute("data", item.type);
+         if(item.baseType) {
+            inputElement.setAttribute("data", item.baseType);
+         }
+         if( item.value != undefined ) {
+            inputElement.value = item.value;
+         }
+         if( item.placeholder ) {
+            inputElement.placeholder = item.placeholder;
+         }
+         if( item.class ) {
+            inputElement.classList.add(item.class);
+         }
+         if( readOnly ) {
+            inputElement.readOnly = true;
+         }
+
+         var error = document.createElement("div");
+         error.classList.add("error");
+         row.appendChild(label);
+         row.appendChild(inputElement);
+         row.appendChild(error);
+         return row; 
+      }
+
+      function getSelectedFunction() {
+         var contract = getCurrentContract();
+         if( !contract ) return null;
+
+         var selected = document.querySelector("div.selected");
+         if( !selected ) return null;
+
+         const signature = selected.dataset.signature;
+         const contractInterface = new ethers.utils.Interface(contract.abi);
+         return { signature, ...contractInterface.functions[signature]};
+      }
+
+      function startApp() {
+         const address = ethers.constants.AddressZero;
+         const provider = ethers.getDefaultProvider();
+         signer = new ethers.VoidSigner( address, provider )
+         network =  provider.network.name;
+         registerEventListeners();
+         refreshPage();      
+      }
+
+      function registerEventListeners() {
+         document.getElementById('btn-add').onclick = openModal;
+         document.getElementById('btn-del').onclick = openModal;
+         document.getElementById('btn-edit').onclick = openModal;
+         document.getElementById('btn-save').onclick = updateAbi;
+         document.getElementById('btn-cancel').onclick = closeModal;
+         document.getElementById('wallet-close').onclick = closeWallet;
+         document.getElementById('connect').onclick = connectWallet;
+         document.getElementById('metamask').onclick = connectMetamask;
+         document.getElementById('wallet-connect').onclick = connectWalletConnect;
+
+         document.getElementById("contract").onchange = loadFunctions;
+         document.getElementById("run-button").onclick = callContractFunction;
+         document.getElementById("filterer").onkeyup = filterFunctions;
+
+         document.querySelector(".dropdown").onclick = dropdownClicked;
+         var contractAddress = document.getElementById("contract-address");
+         registerInputEventListener( contractAddress );
+         var contractName = document.getElementById("contract-name");
+         registerInputEventListener( contractName);
+         var contractAbi = document.getElementById("contract-abi");
+         registerInputEventListener( contractAbi );
+
+         window.onclick = handleClick; 
+      }
+
+      function closeWallet() {
+         document.getElementById('wallet').style.display = "none";
+      }
+
+      function shortenAddress(address) {
+         return address.substring(0,12) + "..." + address.substring(address.length-6)
+      }
+
+      function connectMetamask(event) {
+         event.stopPropagation();
+
+         if (typeof window.ethereum === 'undefined') {
+            alert('MetaMask is not installed!');
+            return;
+         }
+
+         document.getElementById("wallet-close").click();
+
+         ethereum.request({ method: 'eth_requestAccounts' }).then(async accounts => {
+            const provider = new ethers.providers.Web3Provider(window.ethereum);
+            provider.ready.then(() => {
+               console.log('network', provider.network);
+               network = provider.network.name;
+
+               document.getElementById("connect").textContent = shortenAddress(accounts[0]);
+               signer = provider.getSigner();
+               refreshPage();
+
+               ethereum.on('accountsChanged', (accounts) => {
+                  console.log('account chaange')
+                  window.location.reload();
+               });
+
+               ethereum.on('chainChanged', (chainId) => {
+                  //console.log('chain chaange')
+                  window.location.reload();
+               });
+
+            });
+         })
+      }
+
+      function connectWalletConnect() {
+         event.stopPropagation();
+      }
+
+       function dropdownClicked() {
+          var dropdownContent = document.getElementById("contract-list");
+          dropdownContent.classList.toggle("hide");
+          event.stopPropagation();
+       }
+
+       function handleClick(event) {
+          if( !event.target.matches('.dropdown-content')) {
+             document.getElementById("contract-list").classList.add("hide");
+         }
+       }
+
+       function openModal() {
+          document.getElementById('main-page').classList.add("fade-out");
+          var modal = document.getElementById('modal');
+          modal.removeAttribute("class");
+          modal.classList.add("fade-in");
+          switch( event.target.id ) {
+            case "btn-del":
+               modal.classList.add("del");
+               populateModal("Delete");
+               break; 
+            case "btn-add":
+               modal.classList.add("add");
+               populateModal("Add");
+               break; 
+            default:
+               console.log('openModal', "edit");
+               modal.classList.add("edit");
+               populateModal("Update");
+               break; 
+            }
+       }
+
+       function populateModal(action) {
+          var btn = document.getElementById('btn-save');
+          btn.textContent = action;
+
+          var address = document.getElementById("contract-address"); 
+          var name = document.getElementById("contract-name");
+          var abi = document.getElementById("contract-abi");
+          address.value = "";
+          name.value = "";
+          abi.value = "";
+
+          // hide error message as there should be no error 
+          // when the dialog first pops up
+          address.nextElementSibling.style.opacity = 0;
+          name.nextElementSibling.style.opacity = 0;
+          abi.nextElementSibling.style.opacity = 0;
+
+          var dropdown = document.getElementById("contract"); 
+          switch(action) {
+             case "Add": 
+                address.removeAttribute("readonly");
+                name.removeAttribute("readonly");
+                abi.removeAttribute("readonly");
+                break; 
+
+             default:
+                var contractAddr  = dropdown.getAttribute("data");
+                var contract = abiList[network].filter(
+                            e => e.address === contractAddr);
+                if( contract.length > 0 ) {
+                   address.value = contract[0].address;
+                   name.value = contract[0].name;
+                   abi.value = JSON.stringify(contract[0].abi);
+                }
+
+                address.readOnly = true;
+                if( action === "Delete" ) {
+                   name.readOnly = true;
+                   abi.readOnly = true;
+                } else {
+                   name.removeAttribute("readonly");
+                   abi.removeAttribute("readonly");
+                }
+                break; 
+          }
+       }
+
+       function updateAbi() {
+          var result;
+          var action = this.textContent;
+          switch( action ) {
+             case "Add":
+                result = addContract();
+                break;
+             case "Update":
+                result = updateContract();
+                break;
+             case "Delete":
+                result = deleteContract();
+                break;
+          }
+
+          // do not close the modal if there's error
+          // saving the changes
+          if( result ) closeModal();
+       }
+
+       function updateContract() {
+          var section = document.getElementById("modal"); 
+          var pass = passValidation(section);
+          if( !pass ) return pass;
+
+          console.log("passValidation", pass);
+          var address = document.getElementById("contract-address"); 
+          var name = document.getElementById("contract-name");
+          var abi = document.getElementById("contract-abi");
+          for( var i = 0; i < abiList[network].length; i++ ) {
+             if( abiList[network][i].address === address.value ) {
+                abiList[network][i].name = name.value;
+                abiList[network][i].abi = JSON.parse(abi.value);
+                break; 
+             }
+          }
+          localStorage.setItem("ethersapp_abi", JSON.stringify(abiList));
+          var selected = document.querySelector("#contract-list .active"); 
+          selected.textContent = name.value + " - " + address.value;
+          selected.click();
+          return true;
+       }
+
+       function deleteContract() {
+          var address = document.getElementById("contract-address").value; 
+          var newList = abiList[network].filter( e => e.address != address);
+          abiList[network] = newList;
+          localStorage.setItem("ethersapp_abi", JSON.stringify(abiList));
+          refreshPage();
+          
+          return true;
+       }
+
+       function addContract() {
+          var section = document.getElementById("modal"); 
+          var pass = passValidation(section);
+          if( !pass ) return;
+
+          var address = document.getElementById("contract-address"); 
+          var name = document.getElementById("contract-name");
+          var abi = document.getElementById("contract-abi");
+          var newContract = {
+             "address"     : address.value,
+             "name"        : name.value,
+             "abi"         : JSON.parse(abi.value)
+          };
+          console.log("network", network);
+          if( !abiList[network] ) {
+             abiList[network] = [];
+          }
+          abiList[network].push(newContract);
+          localStorage.setItem("ethersapp_abi", JSON.stringify(abiList));
+          var item = createContractDropDownElement(newContract);
+          var dropdown = document.querySelector("#contract-list");
+          dropdown.appendChild(item);
+          item.onclick = onContractChange;
+          item.click();
+          document.getElementById("btn-edit").style.display = "";
+          document.getElementById("btn-del").style.display = "";
+          document.getElementById("no-contract").style.display = "none";
+          return true;
+       }
+
+       function closeModal() {
+          document.getElementById('modal').classList.remove("fade-in");
+          document.getElementById('main-page').classList.remove("fade-out");
+       }
+      
+       function callContractFunction(event) {
+         event.stopPropagation();
+         clearResult();
+
+         var selected = getSelectedFunction();
+         if( selected.constant == false && signer.address === ethers.constants.AddressZero ) {
+            alert("Please click the connect button to connect to a wallet first");
+            return;
+         }
+
+         var section = document.getElementById("input-section");
+         var pass = passValidation(section);
+         if( !pass ) return;
+
+         executeContractFunction(signer);
+
+       }
+
+       function connectWallet() {
+         document.getElementById('wallet').style.display = "block";
+       }
+
+       function executeContractFunction(signerOrProvider) {
+         const selected = getSelectedFunction();
+         showSpinner();
+
+         var current = getCurrentContract();
+
+         console.log('contract selected', current);
+         var contract = new ethers.Contract(current.address, current.abi, signerOrProvider );
+         var args = getArgumentValues();
+         
+         var contractFunction = contract.functions[selected.signature];
+         var promise = contractFunction.apply(contract, args);
+         promise.then(function(result) {
+            updateResult(selected, result);
+         }, function(reject){
+            console.log("reject", reject);
+            logContractError(JSON.stringify(reject));
+         });
+       }
+
+       function showSpinner() {
+          var spinner = document.querySelector(".spinner");
+          spinner.classList.add("show");
+       }
+
+       function hideSpinner() {
+          var spinner = document.querySelector(".spinner");
+          spinner.classList.remove("show");
+       }
+
+       function clearResult() {
+           var section = document.getElementById("result-section");
+           section.innerHTML = "";
+           section.classList.remove("card");
+       }
+
+       function logContractError(error) {
+           var section = document.getElementById("result-section");
+           hideSpinner();
+           var errorElement = document.createElement("div");
+           errorElement.textContent = error;
+           errorElement.style.color = "red";
+           section.appendChild(errorElement);
+       }
+
+       function updateResult(contractFunction, result) {
+           var section = document.getElementById("result-section");
+           hideSpinner();
+           section.classList.add("card");
+           var readOnly = true;
+           
+           if( contractFunction.constant === true ) {
+             contractFunction.outputs.forEach(function(item, i){
+                const inputRow = createInputRow({ value: result[i], ...item}, readOnly);
+                section.appendChild(inputRow);
+             });
+           } else {
+              var item = {"name":"txhash","type":"bytes","value":result.hash};
+              var inputRow = createInputRow(item, readOnly);
+              section.appendChild(inputRow);
+
+              const anchor = createTxHashLink(result.hash);
+              if( anchor ){
+                  section.appendChild(anchor);
+              }
+           }
+       }
+
+       function isSupportedByEtherscan() {
+          return( ["ropsten", "homestead"].includes(network) );
+       }
+
+       function createTxHashLink(hash){
+         let anchor = null;
+         const href = getEtherscanUrl("tx", hash);
+
+         if( href ) {
+            const anchor = document.createElement("a");
+            anchor.href = href;
+            anchor.target = "_blank";
+            anchor.textContent = href;
+         }
+         return anchor;
+       }
+
+       const COMPLEX_TYPES = new Set(['array', 'tuple'])
+       function formatArgumentValue(item) {
+          console.log('.....item', item)
+         if( item.classList.contains("tx-value") ) {
+            return  { "value": ethers.utils.parseEther(i.value) }
+          } else if( COMPLEX_TYPES.has(item.getAttribute('data')) ) {
+            return JSON.parse(item.value);
+          } else {
+            return item.value;
+          }
+       }
+
+       function getArgumentValues() {
+          var selector = "#input-section input";
+          var inputs = document.querySelectorAll(selector);
+          console.log('....inputs', inputs)
+          
+          const args = Array.from(inputs).map(item => formatArgumentValue(item))
+          console.log('args', args)
+          return args;
+       }
+
+       function passValidation(section) {
+          var inputFields = section.querySelectorAll("input");
+          var pass = true; 
+          inputFields.forEach(function(field){
+             if( !validateInput(field) ) {
+                console.log("passValidation", false);
+                pass = false;   
+             }
+          }); 
+
+          var textareas = section.querySelectorAll("textarea");
+          textareas.forEach( function(field) {
+             if( !validateInput(field) ) {
+                pass = false;   
+             }
+          });
+          return pass;
+       }
+
+       function isValidAbi(val) {
+          var result = { valid: true };
+          try {
+             var abi = new ethers.utils.Interface(val);
+          } catch (e) {
+             result.valid = false;
+             result.message = "Invalid ABI";
+             console.log(result.message, e)
+          }
+
+          return result;
+       }
+
+       function isValidHex(val, type, len) {
+          var result = {};
+          result.valid = true;
+          
+          if( val.length === 0 ) 
+          {
+             result.valid = false;
+             result.message = "Field value is required";
+          }
+          else 
+          {
+             var pattern = "^0x[0-9a-fA-F]" + (len? "{"+ len + "}" : "+")+"$";
+             var regex = new RegExp(pattern);
+             result.valid = regex.test(val);
+             console.log('regex', pattern, result.valid);
+             result.message = "Invalid hex string";
+          }
+          return result;
+       }
+
+       function isValidUint(val, type) {
+          var result = {};
+          result.valid = true;
+
+          try {
+             var bigNum = ethers.BigNumber.from(val);
+             if( bigNum.lt(0) ) 
+             {
+                result.valid = false;
+                result.message = "Invalid " + type;
+             }
+          } catch ( e ) {
+             result.valid = false;
+             result.message = "Invalid " + type + ": " + e;
+          }
+          return result;
+       }
+
+       function isValidETH(val) {
+          const result = { valid: true };
+          try {
+             const wei = ethers.utils.parseEther(val);
+          } catch (e) {
+            result.valid = false;
+            result.message = "Invalid amount in TNMIG: " + val;
+          }
+
+          return result;
+       }
+
+       function isValid(val, type) {
+          var result = {};
+          result.valid = true;
+          result.message = "";
+          
+          var trimmedValue = val.trim();
+          if( type.indexOf("bytes") >= 0 ) {
+             result = isValidHex(trimmedValue, type);
+          } else if( type === "address" ) {
+             result = isValidHex(trimmedValue, type, 40);
+             if( result.valid === false ) {
+                result.message = "Invalid address";
+             }
+          } else if( type === "abi" ) {
+             result = isValidAbi(trimmedValue);
+          } else if( type.indexOf("uint") >= 0 ) {
+             result = isValidUint(val, type);
+          } else if( type === "TNMIG" ) {
+             result = isValidETH(val);
+          }
+
+          return result;
+       }
+
+       function handleKeyUp() {
+          if( event.keyCode == 13 ) {
+             var submitButton = this.closest(".submit");
+             submitButton.click();
+          }
+       }
+
+       function validateInputOnBlur() {
+          validateInput(this);
+       }
+
+       function validateInput(inputField) {
+          var border = "";
+          var display = "none";
+          var errorMessage = inputField.nextElementSibling;
+          errorMessage.style.opacity = 0;
+           
+          var isRequired = inputField.hasAttribute("required");
+          var inputValue = inputField.value;
+          if( isRequired && inputValue === "" ) 
+          {
+             errorMessage.style.opacity = 1;
+             errorMessage.textContent = "* Value is required";
+             return false;
+          }
+             
+          console.log('inputField', inputField, isRequired)
+          var inputType = inputField.getAttribute("data");
+          var result = isValid(inputValue, inputType);
+          if( !result.valid ){
+             errorMessage.style.opacity = 1;
+             errorMessage.textContent = "* " + result.message;
+          } 
+          return( result.valid );
+       }
+
+   </script>
+</body>
+</html>
